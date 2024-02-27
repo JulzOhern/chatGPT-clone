@@ -1,6 +1,7 @@
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import React from "react";
+import { Toaster } from "sonner";
 
 export default function MainLayout({
   children,
@@ -11,7 +12,10 @@ export default function MainLayout({
     <div>
       <Navbar />
       <Sidebar />
-      <div className="ml-[16rem]">{children}</div>
+      <div className="ml-[16rem]">
+        <Toaster position="top-center" />
+        {children}
+      </div>
     </div>
   );
 }

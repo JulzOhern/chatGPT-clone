@@ -12,8 +12,8 @@ export default async function Sidebar() {
   const userNewChat = await getUserNewChat();
 
   return (
-    <div className="sidebarContainer flex flex-col fixed inset-y-0 bg-[#171717] w-[16rem] pb-3">
-      <div className="sidebar flex-1 pt-[.9rem] pl-3 pr-2 mr-1 overflow-auto">
+    <div className="sidebarContainer flex flex-col fixed inset-y-0 bg-[#171717] w-[16rem] pb-3 z-[101]">
+      <div className="sidebar flex-1 pt-[.9rem] pl-3 pr-2 mr-1 overflow-y-scroll overflow-x-clip">
         <Link
           href="/"
           className="sticky top-0 z-[50] flex items-center justify-between p-1 hover:bg-[#212121] bg-[#171717] rounded-lg py-[6px] px-2"
@@ -33,7 +33,7 @@ export default async function Sidebar() {
         </div>
       </div>
 
-      <div className="pt-2 px-3">
+      <div className="pt-4 px-3">
         <div className="flex items-center gap-2 cursor-pointer hover:bg-[#212121] p-2 rounded-lg">
           <UserButton />
           <p className="text-sm">{user?.username}</p>

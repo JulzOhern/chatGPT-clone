@@ -55,7 +55,7 @@ export async function POST(req: Request) {
     await db.user.create({
       data: {
         externalUserId: payload.data.id,
-        username: `${payload.data.first_name} ${payload.data.last_name}`,
+        username: payload.data.username,
         profile: payload.data.profile_image_url,
       },
     });

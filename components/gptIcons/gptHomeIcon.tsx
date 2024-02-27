@@ -8,7 +8,7 @@ export default function GptHomeIcon() {
       viewBox="0 0 41 41"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="sticky top-52 z-[101] h-10 w-10 md:h-16 md:w-16"
+      className="h-10 w-10 md:h-16 md:w-16"
       role="img"
     >
       <text x="-9999" y="-9999">
