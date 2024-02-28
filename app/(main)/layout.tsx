@@ -12,10 +12,8 @@ export default function MainLayout({
     <div>
       <Navbar />
       <Sidebar />
-      <div className="ml-[16rem]">
-        <Toaster position="top-center" />
-        {children}
-      </div>
+      <Toaster position="top-center" />
+      <div>{children}</div>
     </div>
   );
 }

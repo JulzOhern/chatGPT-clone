@@ -4,15 +4,15 @@ import React, { ElementRef, useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import InputButton from "./gptIcons/inputButton";
 import { useChat } from "ai/react";
-import Image from "next/image";
-import AssistantIcon from "./gptIcons/assistantIcon";
 import { usePathname } from "next/navigation";
-import GptHomeIcon from "./gptIcons/gptHomeIcon";
 import { createNewChat } from "@/actions/newChat";
 import { createChats } from "@/actions/createChat";
 import StopChatIcon from "./gptIcons/stopChatIcon";
 import NewChatsRow from "./newChatsRow";
 import MessagesRow from "./messagesRow";
+import HomeForm from "./homeForm";
+import { useOpenSideBar } from "@/utils/zustand";
+import { cn } from "@/lib/utils";
 
 type ChatRowProp = {
   user: {
@@ -44,16 +44,40 @@ type ChatRowProp = {
 
 const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
   const scrollRef = useRef<ElementRef<"div">>(null);
+  const setCloseOpen = useOpenSideBar((state) => state.setCloseOpen);
+  const isOpenSidebar = useOpenSideBar((state) => state.isOpen);
+  const setCloseSidebar = useOpenSideBar((state) => state.setCloseSidebar);
   const [scrollToBottom, setScrollToBottom] = useState(0);
-  const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
-    useChat();
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    isLoading,
+    stop,
+    append,
+  } = useChat();
   const pathname = usePathname();
+
+  useEffect(() => {
+    function handleResize() {
+      const hideSideBar = window.matchMedia(
+        "screen and (min-width: 767px)"
+      ).matches;
+
+      setCloseSidebar(hideSideBar);
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [setCloseSidebar]);
 
   useEffect(() => {
     (async () => {
       if (pathname === "/" && isLoading === false && messages.length !== 0) {
-        console.log(isLoading);
-
         await createNewChat(messages);
       }
 
@@ -65,21 +89,26 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
         await createChats(messages, chatId);
       }
     })();
-  }, [pathname, isLoading, messages]);
+  }, [pathname, isLoading, messages, chatId]);
 
   useEffect(() => {
     function handleScroll() {
-      const isBottom =
-        scrollRef.current!.scrollHeight -
-        (scrollRef.current!.clientHeight + scrollRef.current!.scrollTop);
+      if (scrollRef.current) {
+        const isBottom =
+          scrollRef.current.scrollHeight -
+          (scrollRef.current.clientHeight + scrollRef.current.scrollTop);
 
-      setScrollToBottom(isBottom);
+        setScrollToBottom(isBottom);
+      }
     }
 
-    scrollRef.current?.addEventListener("scroll", handleScroll);
+    const scrollReference = scrollRef.current?.addEventListener(
+      "scroll",
+      handleScroll
+    );
 
     return () => {
-      scrollRef.current?.removeEventListener("scroll", handleScroll);
+      scrollReference;
     };
   }, [messages]);
 
@@ -93,22 +122,73 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-  }, []);
+    setCloseSidebar(window.matchMedia("screen and (min-width: 767px)").matches);
+  }, [setCloseSidebar]);
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div
+      className={cn(
+        "flex flex-col min-h-[100dvh] duration-200",
+        isOpenSidebar ? "md:ml-[16rem]" : "ml-0"
+      )}
+    >
+      <button
+        type="button"
+        onClick={() => setCloseOpen()}
+        className={cn(
+          "fixed top-[.9rem] z-[200] group/skew group/bg duration-200 h-[2.2rem] w-[2.2rem] md:hidden flex flex-col items-center justify-center focus:ring-2 ring-white",
+          isOpenSidebar ? "ml-[16rem] left-3" : "ml-0 left-[-4rem]"
+        )}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="icon-md"
+        >
+          <path
+            d="M6.34315 6.34338L17.6569 17.6571M17.6569 6.34338L6.34315 17.6571"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          ></path>
+        </svg>
+      </button>
+
+      <div
+        onClick={() => setCloseOpen()}
+        className={cn(
+          "fixed left-0 inset-y-[46%] z-[200] group/skew group/bg ml-[16rem] duration-200 h-[3rem] w-[1.5rem] hidden md:flex flex-col items-center justify-center",
+          isOpenSidebar ? "ml-[16rem]" : "ml-0"
+        )}
+      >
+        <div
+          className={cn(
+            "h-[.7rem] w-[.27rem] bg-zinc-400 rounded-t-lg flex items-center duration-100 group-hover/bg:bg-white mb-[-.1rem]",
+            !isOpenSidebar
+              ? "-skew-x-[-15deg] ml-2"
+              : "group-hover/skew:-skew-x-[15deg]"
+          )}
+        />
+        <div
+          className={cn(
+            "h-[.7rem] w-[.27rem] bg-zinc-400 rounded-b-lg flex items-center duration-100 group-hover/bg:bg-white mt-[-.1rem]",
+            !isOpenSidebar
+              ? "-skew-x-[15deg] ml-2"
+              : "group-hover/skew:skew-x-[15deg]"
+          )}
+        />
+      </div>
+
       {pathname === "/" && messages.length === 0 ? (
-        <div className="relative flex-1 overflow-auto">
-          <div className="absolute inset-0 mx-auto max-w-[48rem] pt-16">
-            <div className="flex items-center justify-center flex-col gap-2 pb-14 px-10 h-full">
-              <GptHomeIcon />
-            </div>
-          </div>
-        </div>
+        <HomeForm append={append} />
       ) : (
         <div ref={scrollRef} className="relative flex-1 overflow-auto">
           <div className="absolute inset-0 mx-auto max-w-[48rem] pt-16">
-            <div className="flex flex-col gap-12 pb-14 px-10">
+            <div className="flex flex-col gap-12 pb-14 px-5 md:px-10">
               {pathname === `/c/${chatId}` &&
                 newChat?.chats.length !== 0 &&
                 newChat?.chats.map((m) => (
@@ -123,7 +203,46 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-2 px-4">
+      <form
+        onSubmit={handleSubmit}
+        onKeyDown={(e) => {
+          if (e.keyCode === 13 && e.shiftKey) {
+            return;
+          }
+
+          if (e.keyCode === 13) {
+            e.preventDefault();
+            handleSubmit(e);
+          }
+        }}
+        className="relative flex flex-col justify-center items-center gap-2 mb-2 px-4"
+      >
+        {scrollToBottom > 0 && (
+          <button
+            onClick={() =>
+              scrollRef.current?.scrollTo({
+                top: scrollRef.current?.scrollHeight,
+              })
+            }
+            className="absolute top-[-3rem] rounded-full bg-[#212121] border border-zinc-700 z-[500]"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              className="m-1 text-token-text-primary"
+            >
+              <path
+                d="M17 13L12 18L7 13M12 6L12 17"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              ></path>
+            </svg>
+          </button>
+        )}
         <div className="relative flex items-center w-full gap-2 max-w-[48rem] mx-auto">
           <TextareaAutosize
             placeholder="Message ChatGPT..."

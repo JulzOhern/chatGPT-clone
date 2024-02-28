@@ -82,7 +82,7 @@ export default function UserNewChatsRow({ userNewChat }: UserNewChatsRowProp) {
       }
     }
     return createdChatDate;
-  }, [userNewChat, getFormattedDate]);
+  }, [userNewChat]);
 
   useEffect(() => {
     function handleClick() {
@@ -165,7 +165,7 @@ export default function UserNewChatsRow({ userNewChat }: UserNewChatsRowProp) {
                         <HiDotsHorizontal cursor="pointer" />
                       </PopoverTrigger>
 
-                      <PopoverContent className="flex flex-col absolute left-[-.8rem] w-[11.5rem] bg-[#2f2f2f] border border-zinc-700 text-white text-sm">
+                      <PopoverContent className="flex flex-col absolute left-[-3rem] sm:left-[-.8rem] w-[11.5rem] bg-[#2f2f2f] border border-zinc-700 text-white text-sm">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -212,14 +212,14 @@ export default function UserNewChatsRow({ userNewChat }: UserNewChatsRowProp) {
                         </div>
                         <div className="flex items-center justify-end gap-3 mt-3 text-sm font-medium">
                           <button
-                            aria-disabled={pending}
+                            disabled={pending}
                             onClick={() => setDeleteChat("")}
                             className="hover:bg-[#67676747] hover:border border px-3 py-2 border-[#676767] rounded-lg"
                           >
                             Cancel
                           </button>
                           <button
-                            aria-disabled={pending}
+                            disabled={pending}
                             onClick={() =>
                               setTransition(async () => {
                                 await deleteNewChat(item.id).then(() => {
