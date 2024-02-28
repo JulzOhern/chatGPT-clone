@@ -124,6 +124,7 @@ export default function UserNewChatsRow({ userNewChat }: UserNewChatsRowProp) {
                   </Link>
                 ) : (
                   <form
+                    onClick={(e) => e.stopPropagation()}
                     action={async (formData: FormData) => {
                       const title = formData.get("title") as string;
                       if (!title)
@@ -140,7 +141,6 @@ export default function UserNewChatsRow({ userNewChat }: UserNewChatsRowProp) {
                         name="title"
                         className="w-full text-sm bg-[#212121] ring-2 ring-blue-600 outline-none"
                         defaultValue={item.title}
-                        onClick={(e) => e.stopPropagation()}
                       />
                     </div>
                   </form>
