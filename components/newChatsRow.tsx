@@ -67,7 +67,7 @@ export default function NewChatsRow({ m, user }: NewChatsRowProp) {
           <div className="shrink-0">
             <AssistantIcon />
           </div>
-          <div className="flex flex-col gap-1 flex-1">
+          <div className="flex flex-col flex-1 leading-7">
             <p className="font-medium">ChatGPT</p>
             <ReactMarkdown
               components={{
@@ -80,7 +80,7 @@ export default function NewChatsRow({ m, user }: NewChatsRowProp) {
                 }: any) => {
                   const match = /language-(\w+)/.exec(className || "");
                   return !inline && match ? (
-                    <div className="relative mt-10 mb-2">
+                    <div className="relative mt-10 mb-2 ">
                       <div className="absolute inset-x-0 top-[-1.4rem] flex items-center justify-between bg-[#2f2f2f] rounded-t py-2 px-4">
                         <p className="text-xs text-zinc-400">{match[1]}</p>
 

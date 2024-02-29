@@ -96,12 +96,9 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
   }, [messages]);
 
   useEffect(() => {
-    if (scrollToBottom === 0) {
-      scrollRef.current?.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "auto",
-      });
-    }
+    scrollRef.current?.scrollTo({
+      top: scrollRef.current.scrollHeight,
+    });
   }, [messages, scrollToBottom]);
 
   useEffect(() => {

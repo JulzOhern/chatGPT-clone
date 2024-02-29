@@ -59,7 +59,7 @@ export default function MessagesRow({ m, user }: MessagesRowProp) {
           <div className="shrink-0">
             <AssistantIcon />
           </div>
-          <div className="flex flex-col gap-1 flex-1">
+          <div className="flex flex-col flex-1 leading-7">
             <p className="font-medium">ChatGPT</p>
             <ReactMarkdown
               components={{
