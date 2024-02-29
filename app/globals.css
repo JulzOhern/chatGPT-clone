@@ -111,3 +111,12 @@
   border-radius: 40px;
   visibility: hidden;
 }
+
+@media screen and (max-width: 768px) {
+  .mainSection {
+    margin-left: 0;
+  }
+  .navbar {
+    margin-left: 0;
+  }
+}

@@ -8,19 +8,19 @@ import React, { useEffect } from "react";
 
 export default function Navbar() {
   const isOpenSidebar = useOpenSideBar((state) => state.isOpen);
-  const setOpenSidebar = useOpenSideBar((state) => state.setCloseOpen);
+  const setOpenSidebar = useOpenSideBar((state) => state.setOpenSidebar);
   const setCloseSidebar = useOpenSideBar((state) => state.setCloseSidebar);
   const pathname = usePathname();
 
   useEffect(() => {
-    setCloseSidebar(false);
+    setCloseSidebar();
   }, [setCloseSidebar, pathname]);
 
   return (
     <nav
       className={cn(
-        "fixed inset-x-0 flex items-center justify-between h-11 md:h-14 bg-[#212121] px-4 z-[100] md:border-none border-b border-zinc-700 duration-200",
-        isOpenSidebar ? "md:ml-[16rem]" : "ml-0"
+        "navbar fixed inset-x-0 flex items-center justify-between h-11 md:h-14 bg-[#212121] px-4 z-[100] md:border-none border-b border-zinc-700 duration-200",
+        isOpenSidebar ? "md:ml-0 ml-[16rem]" : "md:ml-[16rem] ml-0"
       )}
     >
       <button
@@ -47,7 +47,7 @@ export default function Navbar() {
       </button>
 
       <div className="flex items-center gap-5">
-        {!isOpenSidebar && (
+        {isOpenSidebar && (
           <Link
             href="/"
             className="md:block hidden border border-zinc-700 rounded-lg p-2"

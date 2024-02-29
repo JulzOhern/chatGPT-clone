@@ -44,7 +44,7 @@ type ChatRowProp = {
 
 const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
   const scrollRef = useRef<ElementRef<"div">>(null);
-  const setCloseOpen = useOpenSideBar((state) => state.setCloseOpen);
+  const setOpensidebar = useOpenSideBar((state) => state.setOpenSidebar);
   const isOpenSidebar = useOpenSideBar((state) => state.isOpen);
   const setCloseSidebar = useOpenSideBar((state) => state.setCloseSidebar);
   const [scrollToBottom, setScrollToBottom] = useState(0);
@@ -58,22 +58,6 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
     append,
   } = useChat();
   const pathname = usePathname();
-
-  useEffect(() => {
-    function handleResize() {
-      const hideSideBar = window.matchMedia(
-        "screen and (min-width: 767px)"
-      ).matches;
-
-      setCloseSidebar(hideSideBar);
-    }
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [setCloseSidebar]);
 
   useEffect(() => {
     (async () => {
@@ -102,13 +86,12 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
       }
     }
 
-    const scrollReference = scrollRef.current?.addEventListener(
-      "scroll",
-      handleScroll
-    );
+    const scrollReference = scrollRef.current;
+
+    scrollReference?.addEventListener("scroll", handleScroll);
 
     return () => {
-      scrollReference;
+      scrollReference?.removeEventListener("scroll", handleScroll);
     };
   }, [messages]);
 
@@ -116,25 +99,25 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
     if (scrollToBottom === 0) {
       scrollRef.current?.scrollTo({
         top: scrollRef.current.scrollHeight,
+        behavior: "auto",
       });
     }
   }, [messages, scrollToBottom]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
-    setCloseSidebar(window.matchMedia("screen and (min-width: 767px)").matches);
-  }, [setCloseSidebar]);
+  }, []);
 
   return (
     <div
       className={cn(
-        "flex flex-col min-h-[100dvh] duration-200",
-        isOpenSidebar ? "md:ml-[16rem]" : "ml-0"
+        "mainSection flex flex-col min-h-[100dvh] duration-200",
+        isOpenSidebar ? "md:ml-0 ml-[16rem]" : "md:ml-[16rem] ml-0"
       )}
     >
       <button
         type="button"
-        onClick={() => setCloseOpen()}
+        onClick={() => setCloseSidebar()}
         className={cn(
           "fixed top-[.9rem] z-[200] group/skew group/bg duration-200 h-[2.2rem] w-[2.2rem] md:hidden flex flex-col items-center justify-center focus:ring-2 ring-white",
           isOpenSidebar ? "ml-[16rem] left-3" : "ml-0 left-[-4rem]"
@@ -158,30 +141,23 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
         </svg>
       </button>
 
-      <div
-        onClick={() => setCloseOpen()}
-        className={cn(
-          "fixed left-0 inset-y-[46%] z-[200] group/skew group/bg ml-[16rem] duration-200 h-[3rem] w-[1.5rem] hidden md:flex flex-col items-center justify-center",
-          isOpenSidebar ? "ml-[16rem]" : "ml-0"
-        )}
-      >
+      {!isOpenSidebar ? (
         <div
-          className={cn(
-            "h-[.7rem] w-[.27rem] bg-zinc-400 rounded-t-lg flex items-center duration-100 group-hover/bg:bg-white mb-[-.1rem]",
-            !isOpenSidebar
-              ? "-skew-x-[-15deg] ml-2"
-              : "group-hover/skew:-skew-x-[15deg]"
-          )}
-        />
+          onClick={() => setOpensidebar()}
+          className="fixed left-0 inset-y-[46%] z-[200] group/skew group/bg duration-200 h-[3rem] w-[1.5rem] hidden md:flex flex-col items-center justify-center ml-[16rem]"
+        >
+          <div className="h-[.7rem] w-[.27rem] bg-zinc-400 rounded-t-lg flex items-center duration-100 group-hover/bg:bg-white mb-[-.1rem] group-hover/skew:-skew-x-[15deg]" />
+          <div className="h-[.7rem] w-[.27rem] bg-zinc-400 rounded-b-lg flex items-center duration-100 group-hover/bg:bg-white mt-[-.1rem] group-hover/skew:skew-x-[15deg]" />
+        </div>
+      ) : (
         <div
-          className={cn(
-            "h-[.7rem] w-[.27rem] bg-zinc-400 rounded-b-lg flex items-center duration-100 group-hover/bg:bg-white mt-[-.1rem]",
-            !isOpenSidebar
-              ? "-skew-x-[15deg] ml-2"
-              : "group-hover/skew:skew-x-[15deg]"
-          )}
-        />
-      </div>
+          onClick={() => setCloseSidebar()}
+          className="fixed left-0 inset-y-[46%] z-[200] group/skew group/bg duration-200 h-[3rem] w-[1.5rem] hidden md:flex flex-col items-center justify-center"
+        >
+          <div className="h-[.7rem] w-[.27rem] bg-zinc-400 rounded-t-lg flex items-center duration-100 group-hover/bg:bg-white mb-[-.1rem] -skew-x-[-15deg] ml-2" />
+          <div className="h-[.7rem] w-[.27rem] bg-zinc-400 rounded-b-lg flex items-center duration-100 group-hover/bg:bg-white mt-[-.1rem] skew-x-[-15deg] ml-2" />
+        </div>
+      )}
 
       {pathname === "/" && messages.length === 0 ? (
         <HomeForm append={append} />
@@ -224,7 +200,7 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
                 top: scrollRef.current?.scrollHeight,
               })
             }
-            className="absolute top-[-3rem] rounded-full bg-[#212121] border border-zinc-700 z-[500]"
+            className="absolute top-[-3rem] rounded-full bg-[#212121] border border-zinc-700 z-[10]"
           >
             <svg
               width="24"

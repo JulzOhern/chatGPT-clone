@@ -36,7 +36,7 @@ export default function SidebarRow({ user, userNewChat }: SidebarRowProp) {
     <div
       className={cn(
         "sidebarContainer flex flex-col fixed inset-y-0 w-[16rem] bg-[#171717] pb-3 z-[103] duration-200 overflow-hidden",
-        isOpenSidebar ? "w-[16rem]" : "w-0"
+        isOpenSidebar ? "md:w-0 w-[16rem]" : "md:w-[16rem] w-[0]"
       )}
     >
       <div className="sidebar flex-1 pt-[.9rem] pl-3 pr-2 mr-1 overflow-x-hidden">
