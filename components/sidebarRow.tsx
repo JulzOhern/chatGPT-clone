@@ -6,7 +6,7 @@ import React from "react";
 import SidebarGPTlogo from "./gptIcons/sidebarGPTlogo";
 import NewChatPencilIcon from "./gptIcons/newChatPencilIcon";
 import UserNewChatsRow from "./userNewChatsRow";
-import { UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useOpenSideBar } from "@/utils/zustand";
 
 type SidebarRowProp = {
@@ -63,7 +63,12 @@ export default function SidebarRow({ user, userNewChat }: SidebarRowProp) {
 
       <div className="pt-4 px-3">
         <div className="flex items-center gap-2 cursor-pointer hover:bg-[#212121] p-2 rounded-lg">
-          <UserButton />
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
           <p className="text-sm whitespace-nowrap">{user?.username}</p>
         </div>
       </div>
