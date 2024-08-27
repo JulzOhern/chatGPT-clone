@@ -2,15 +2,19 @@ import { auth } from "@clerk/nextjs/server";
 import { db } from "./db";
 
 export async function getUser() {
-  const { userId } = auth();
+  try {
+    const { userId } = auth();
 
-  if (!userId) return null;
+    if (!userId) return null;
 
-  const user = await db.user.findUnique({
-    where: {
-      externalUserId: userId,
-    },
-  });
+    const user = await db.user.findUnique({
+      where: {
+        externalUserId: userId,
+      },
+    });
 
-  return user;
+    return user;
+  } catch (error: any) {
+    throw new Error("Error getting user " + error.message);
+  }
 }
