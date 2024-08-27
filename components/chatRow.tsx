@@ -13,6 +13,7 @@ import MessagesRow from "./messagesRow";
 import HomeForm from "./homeForm";
 import { useOpenSideBar } from "@/utils/zustand";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 type ChatRowProp = {
   user: {
@@ -62,7 +63,9 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
   useEffect(() => {
     (async () => {
       if (pathname === "/" && isLoading === false && messages.length !== 0) {
-        await createNewChat(messages);
+        await createNewChat(messages).catch(() =>
+          toast.error("Something went wrong")
+        );
       }
 
       if (
@@ -70,7 +73,9 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
         isLoading === false &&
         messages.length !== 0
       ) {
-        await createChats(messages, chatId);
+        await createChats(messages, chatId).catch(() =>
+          toast.error("Something went wrong")
+        );
       }
     })();
   }, [pathname, isLoading, messages, chatId]);
@@ -106,8 +111,6 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, []);
-
-  console.log(user);
 
   return (
     <div

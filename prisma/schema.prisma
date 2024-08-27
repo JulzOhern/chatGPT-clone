@@ -30,7 +30,7 @@ model NewChat {
 }
 
 model Chats {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  id        String @id @map("_id")
   userId    String @db.ObjectId
   newChatId String @db.ObjectId
   role      String
