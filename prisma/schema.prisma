@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             String @id @default(uuid())
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
   externalUserId String @unique
   username       String @unique
   profile        String
@@ -20,8 +20,8 @@ model User {
 }
 
 model NewChat {
-  id     String  @id @default(uuid())
-  title  String @db.LongText
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  title  String
   userId String
   chats  Chats[]
 
@@ -30,11 +30,11 @@ model NewChat {
 }
 
 model Chats {
-  id        String @id
-  userId    String
-  newChatId String
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String @db.ObjectId
+  newChatId String @db.ObjectId
   role      String
-  content   String  @db.LongText
+  content   String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

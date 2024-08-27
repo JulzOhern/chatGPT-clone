@@ -107,6 +107,8 @@ const ChatRow = ({ user, chatId, newChat }: ChatRowProp) => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, []);
 
+  console.log(user);
+
   return (
     <div
       className={cn(
