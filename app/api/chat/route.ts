@@ -8,6 +8,8 @@ const openai = new OpenAI({
 
 // Set the runtime to edge for best performance
 export const runtime = "edge";
+export const preferredRegion = ['iad1', 'hnd1'];
+export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
